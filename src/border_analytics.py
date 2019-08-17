@@ -12,7 +12,7 @@ Returns a nested dictionary with hierarchy of
 {date:{border: {measure: [value, average (defaulted to 0)]}}}
 '''
 def readFile (inputFile):
-  with open ("Input/"+inputFile) as f:
+  with open ("input/"+inputFile) as f:
     fileDict = {}
     next(f)
     for row in f.readlines(): 
@@ -115,7 +115,7 @@ def sort(dataDict, date):
 
 '''
 def writefile (outputFile, dataDict):
-  with open ("Output/"+outputFile, mode ='w') as fw:
+  with open ("output/"+outputFile, mode ='w') as fw:
     report = csv.writer(fw, delimiter = ',')
     report.writerow (['Border','Date','Measure','Value','Average'])
 

@@ -2,9 +2,6 @@
 from datetime import datetime
 import csv
 
-# Global variable
-# will contain all the dates from the dictionary
-primaryKeys = []
 
 '''
 Reads a csv from Input directory
@@ -12,35 +9,46 @@ Returns a nested dictionary with hierarchy of
 {date:{border: {measure: [value, average (defaulted to 0)]}}}
 '''
 def readFile (inputFile):
-  with open ("input/"+inputFile) as f:
-    fileDict = {}
-    next(f)
-    for row in f.readlines(): 
-      row = row.split(",")
-      border,date, measure, value = row[3:7]
-      border = border.strip()
-      measure = measure.strip()
+  fileDict = {}
+  header =['Port Name', 'State', 'Port Code', 'Border', 'Date', 'Measure', 'Value', 'Location']
+  global primaryKeys
+  primaryKeys = []
+  try:
+    with open ("input/"+inputFile) as f:
+      firstLine = f.readline().strip().split(',')
 
-      # Assumed that measures such as buses and bus Passengers are the same
-      if "Passengers" in measure:
-        if measure[-12] =="s":
-          measure = measure[:-11]+"es"
+      if header != firstLine:
+        return fileDict
+        
+
+      for row in f.readlines(): 
+        row = row.split(",")
+        border,date, measure, value = row[3:7]
+        border = border.strip()
+        measure = measure.strip()
+        
+        # create dictionary
+        if date not in fileDict:
+          primaryKeys.append(date)
+          fileDict[date] = {border:{measure:[int(value), 0]}}
+        elif border not in fileDict[date]:
+          fileDict[date][border] = {measure:[int(value), 0]}
+        elif measure not in fileDict[date][border]:
+          fileDict[date][border][measure] = [int(value), 0]
         else:
-          measure = measure[:-11]+"s"
-      
-      # create dictionary
-      if date not in fileDict:
-        primaryKeys.append(date)
-        fileDict[date] = {border:{measure:[int(value), 0]}}
-      elif border not in fileDict[date]:
-        fileDict[date][border] = {measure:[int(value), 0]}
-      elif measure not in fileDict[date][border]:
-        fileDict[date][border][measure] = [int(value), 0]
-      else:
-        fileDict[date][border][measure][0] += int(value)
+          fileDict[date][border][measure][0] += int(value)
 
-  primaryKeys.sort(key = lambda date: datetime.strptime(date.split()[0], "%m/%d/%Y"))
-  return fileDict
+    primaryKeys.sort(key = lambda date: datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"))
+  except IOError:
+    print ("Can not read file")
+  except IndexError:
+    print ("index error")
+  except ValueError:
+    print ("value error")
+  finally:
+    return fileDict
+  # except :
+  #   print ("File is not properly formatted")
       
 '''
 this function updates the monthly averages of the measures in the dicitonary and returns the update dictionary
@@ -50,6 +58,8 @@ border --> one of 2 options which are 'US-Mexico Border' or 'US-Canada Border'
 
 returns dictionary with the hierarchy of 
 {date:{border: {measure: [value, average]}}}
+
+****BUG : not occuring in consecutive months
 '''
 def average(dataDict, border):
   commonMeasure = []
@@ -126,6 +136,9 @@ def writefile (outputFile, dataDict):
 
 def writeReport (inputFile, outputFile):
   data = readFile(inputFile)
-  average(data, 'US-Mexico Border')
-  finalAvg = average(data, 'US-Canada Border')
-  writefile(outputFile, finalAvg)
+  if len(data)>0: 
+    average(data, 'US-Mexico Border')
+    finalAvg = average(data, 'US-Canada Border')
+    writefile(outputFile, finalAvg)
+
+# writeReport ("Border.csv", 'report.csv')

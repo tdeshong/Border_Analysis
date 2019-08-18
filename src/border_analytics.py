@@ -2,17 +2,29 @@
 from datetime import datetime
 import csv
 
+# global orderedDate
+
+def writeReport (inputFile, outputFile):
+  data = readFile(inputFile)
+  if len(data)>0: 
+    average(data, 'US-Mexico Border')
+    finalAvg = average(data, 'US-Canada Border')
+    writefile(outputFile, finalAvg)
+
+
 
 '''
 Reads a csv from Input directory
 Returns a nested dictionary with hierarchy of
 {date:{border: {measure: [value, average (defaulted to 0)]}}}
 '''
+'''
+need to still check if the date is  date
+'''
 def readFile (inputFile):
   fileDict = {}
-  header =['Port Name', 'State', 'Port Code', 'Border', 'Date', 'Measure', 'Value', 'Location']
-  global primaryKeys
-  primaryKeys = []
+  header = ['Port Name', 'State', 'Port Code', 'Border', 'Date', 'Measure', 'Value', 'Location']
+
   try:
     with open ("input/"+inputFile) as f:
       firstLine = f.readline().strip().split(',')
@@ -20,16 +32,14 @@ def readFile (inputFile):
       if header != firstLine:
         return fileDict
         
-
       for row in f.readlines(): 
         row = row.split(",")
         border,date, measure, value = row[3:7]
         border = border.strip()
         measure = measure.strip()
-        
-        # create dictionary
+
         if date not in fileDict:
-          primaryKeys.append(date)
+          # primaryKeys.append(date)
           fileDict[date] = {border:{measure:[int(value), 0]}}
         elif border not in fileDict[date]:
           fileDict[date][border] = {measure:[int(value), 0]}
@@ -38,69 +48,41 @@ def readFile (inputFile):
         else:
           fileDict[date][border][measure][0] += int(value)
 
-    primaryKeys.sort(key = lambda date: datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"))
+      global orderedDate
+      orderedDate = list(fileDict.keys())
+      orderedDate.sort(key = lambda date: datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"))
   except IOError:
-    print ("Can not read file")
-  except IndexError:
-    print ("index error")
-  except ValueError:
-    print ("value error")
+    print ("Error: Can not read file")
+  except (IndexError, ValueError):
+    print ("Error: Inccorect File format")
   finally:
     return fileDict
-  # except :
-  #   print ("File is not properly formatted")
-      
-'''
-this function updates the monthly averages of the measures in the dicitonary and returns the update dictionary
 
-dataDict --> dictionary with a hierarchy of {date:{border: {measure: [value, average]}}}
-border --> one of 2 options which are 'US-Mexico Border' or 'US-Canada Border'
 
-returns dictionary with the hierarchy of 
-{date:{border: {measure: [value, average]}}}
+def average (dataDict, border):
+  
+  filteredDate = [date for date in orderedDate if border in dataDict[date]]
+  
 
-****BUG : not occuring in consecutive months
-'''
-def average(dataDict, border):
-  commonMeasure = []
-  freq = []
-  # for loop compares the measures 2 dates 2 at a time
-  for dates in range(len(primaryKeys)-1):
-    try:
-      # measure at the current date
-      mNow = dataDict[primaryKeys[dates]][border]
-      # measure at the next date in the list
-      mNext = dataDict[primaryKeys[dates+1]][border]
-      measureIntersection = mNow.keys() & mNext.keys()
+  freqDict = {}
 
-      # updating frequency of the measures seen
-      if len(commonMeasure)==0:
-        commonMeasure = list(measureIntersection)
-        freq = list(map (lambda num: 1, list(measureIntersection)))
+  for date in filteredDate:
+    for measure in dataDict[date][border]:
+      if measure not in freqDict:
+        freqDict[measure]=[1, date]
       else:
-        temp = list(measureIntersection)
-        for m in temp:
-          if m in commonMeasure:
-            freq[commonMeasure.index(m)] +=1
+        lastDate = freqDict[measure][1]
+        lastVal, lastAvg = dataDict[lastDate][border][measure]
+        freq = freqDict[measure][0]
+        avg = sum([lastVal, lastAvg*(freq-1)])/freq
+        dec = avg - int(avg)
+        avg = int(avg+1) if dec>=0.5 else int(avg)
+        # update everything
+        freqDict[measure][0]+=1
+        freqDict[measure][1] = date
+        dataDict[date][border][measure][1] = avg
 
-      # Calculating and updating monthly averages for measures
-      if len(measureIntersection) > 0:
-        for j in measureIntersection:
-          if mNow[j][1]==0:
-            mNext[j][1]= mNow[j][0]
-          else:
-            numMonth = freq[commonMeasure.index(m)]
-            avg = sum([mNow[j][0], mNow[j][1]*(numMonth-1)])/numMonth
-            dec = avg - int(avg)
-            avg = int(avg+1) if dec>=0.5 else int(avg)
-            mNext[j][1] = avg
-            freq[commonMeasure.index(m)] +=1
-
-    except KeyError:
-      pass
-    
   return dataDict
-
 
 '''
 The function sorts monthly measures by value, measure then border
@@ -129,16 +111,17 @@ def writefile (outputFile, dataDict):
     report = csv.writer(fw, delimiter = ',')
     report.writerow (['Border','Date','Measure','Value','Average'])
 
-    for date in primaryKeys[::-1]:
+    for date in orderedDate[::-1]:
+      print (date)
       monthSummary = sort(dataDict, date)
       for info in monthSummary:
         report.writerow(info)
 
-def writeReport (inputFile, outputFile):
-  data = readFile(inputFile)
-  if len(data)>0: 
-    average(data, 'US-Mexico Border')
-    finalAvg = average(data, 'US-Canada Border')
-    writefile(outputFile, finalAvg)
 
-# writeReport ("Border.csv", 'report.csv')
+
+if __name__ == "__main__":
+  x =readFile("Border_Crossing_Entry_Data.csv")
+  print(x)
+  writeReport("Border_Crossing_Entry_Data.csv", "report.csv")
+  # y = average(x, 'US-Mexico Border' )
+  # print (y)

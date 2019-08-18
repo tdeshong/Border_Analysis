@@ -14,10 +14,10 @@ class TestBorderAnalytic(unittest.TestCase):
     self.assertEqual(emptyCsv, ({},[]))
 
     onlyHeader = main.readFile("OnlyHeader.csv")
-    self.assertDictEqual(onlyHeader, ({},[]))
+    self.assertEqual(onlyHeader, ({},[]))
 
     txtFile = main.readFile("Test1.txt")
-    self.assertDictEqual(txtFile, ({},[]))
+    self.assertEqual(txtFile, ({},[]))
   
   def test_average(self):
     dates = ['01/01/2019 12:00:00 AM','02/01/2019 12:00:00 AM','03/01/2019 12:00:00 AM']

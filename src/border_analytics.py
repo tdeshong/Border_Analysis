@@ -9,7 +9,8 @@ def writeReport (inputFile, outputFile):
   inputFile --> csv in the input directory
   outputFile --> csv written to the output directory
 
-  from input file calculates monthly averages and sorts by date, value, measure, border in descending order
+  from input file calculates monthly averages and sorts by date, 
+  value, measure, border in descending order
   and writes it to the outputFile in the output directory
   if input file is not a csv or is incorrectly formatted
   an output file will not be created
@@ -30,12 +31,14 @@ def readFile (inputFile):
 
   Returns a tuple of a nested dictionary with hierarchy
   of {date:{border: {measure: [value, average
-  (defaulted to 0)]}}} and a list of all the dates from the dictionary in ascending order
+  (defaulted to 0)]}}} and a list of all the dates from the dictionary 
+  in ascending order
   '''
 
   fileDict = {}
   ascDates = []
-  header = ['Port Name', 'State', 'Port Code', 'Border', 'Date', 'Measure', 'Value', 'Location']
+  header = ['Port Name', 'State', 'Port Code', 'Border', 'Date', 
+            'Measure', 'Value', 'Location']
 
   try:
     with open ("input/"+inputFile) as f:
@@ -62,7 +65,8 @@ def readFile (inputFile):
 
       # get and sort dates from dictionary
       ascDates = list(fileDict.keys())
-      ascDates.sort(key = lambda date: datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"))
+      ascDates.sort(key = lambda date: 
+                    datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"))
   except IOError:
     print ("Error: Can not read file")
   except (IndexError, ValueError):
@@ -121,7 +125,8 @@ def sort(dataDict, date):
   sorts the values of the date by value, measure, border in
   descending order
 
-  returns a sorted list of list [[border, date, measure, value, average]...[]] for that date
+  returns a sorted list of list 
+  [[border, date, measure, value, average]...[]] for that date
   '''
 
   monthSummary= []
@@ -143,7 +148,8 @@ def writefile (outputFile, dataDict, ascDates):
              {date:{border: {measure: [value, average(default 0]}}}
   ascDate --> list of all the dates in dictionary in ascending order
 
-  sorts information from dataDict in descending order by date, value,measure, border and outputFile to the output directory
+  sorts information from dataDict in descending order by date, value, 
+  measure, border and outputFile to the output directory
   '''
 
   with open ("output/"+outputFile, mode ='w') as fw:

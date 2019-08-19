@@ -1,5 +1,5 @@
 import unittest
-import main
+import borderAnalytics
 
 class TestBorderAnalytic(unittest.TestCase):
 

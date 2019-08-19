@@ -1,4 +1,5 @@
 # Python 3.7.4
+#!/usr/bin/python
 from datetime import datetime
 import csv
 

@@ -1,5 +1,5 @@
 # Python 3.7.4
-#!/usr/bin/python
+#!/usr/bin/env python3
 import unittest
 import borderAnalytics
 

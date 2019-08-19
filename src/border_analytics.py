@@ -3,24 +3,6 @@ from datetime import datetime
 import csv
 
 
-def writeReport (inputFile, outputFile):
-  '''
-  Parameters: 
-  inputFile --> csv in the input directory
-  outputFile --> csv written to the output directory
-
-  from input file calculates monthly averages and sorts by date, 
-  value, measure, border in descending order
-  and writes it to the outputFile in the output directory
-  if input file is not a csv or is incorrectly formatted
-  an output file will not be created
-  '''
-  data, ascDates= readFile(inputFile)
-  if len(data)>0: 
-    average(data, ascDates, 'US-Mexico Border')
-    finalAvg = average(data, ascDates, 'US-Canada Border')
-    writefile(outputFile, finalAvg, ascDates)
-
 
 def readFile (inputFile):
   '''
@@ -161,7 +143,25 @@ def writefile (outputFile, dataDict, ascDates):
       for info in monthSummary:
         report.writerow(info)
 
+def writeReport (inputFile, outputFile):
+  '''
+  Parameters: 
+  inputFile --> csv in the input directory
+  outputFile --> csv written to the output directory
 
+  from input file calculates monthly averages and sorts by date, 
+  value, measure, border in descending order
+  and writes it to the outputFile in the output directory
+  if input file is not a csv or is incorrectly formatted
+  an output file will not be created
+  '''
+  data, ascDates= readFile(inputFile)
+  if len(data)>0: 
+    updateAvg = average(data, ascDates, 'US-Mexico Border')
+    finalAvg = average(updateAvg, ascDates, 'US-Canada Border')
+    writefile(outputFile, finalAvg, ascDates)
+
+    
 
 
 if __name__ == "__main__":

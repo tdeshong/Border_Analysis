@@ -1,8 +1,0 @@
-Measure,Port Name,State,Border,Date,Port Code,Value,Location
-Truck Containers Full,Derby Line,Vermont,US-Canada Border,3/1/19 0:00,209,6483,POINT (-72.09944 45.005)
-Pedestrians,Presidio,Texas,US-Mexico Border,2/1/19 0:00,2403,15272,POINT (-104.37167 29.56056)
-Pedestrians,Calexico,California,US-Mexico Border,3/1/19 0:00,2503,346158,POINT (-115.49806000000001 32.67889)
-Pedestrians,Eagle Pass,Texas,US-Mexico Border,1/1/19 0:00,2303,56810,POINT (-100.49917 28.70889)
-Pedestrians,Hidalgo,Texas,US-Mexico Border,2/1/19 0:00,2305,156891,POINT (-98.26278 26.1)
-Trains,Norton,Vermont,US-Canada Border,3/1/19 0:00,211,19,POINT (-71.79528000000002 45.01)
-Truck Containers Empty,Frontier,Washington,US-Canada Border,2/1/19 0:00,3020,1319,POINT (-117.78134000000001 48.910160000000005)

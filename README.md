@@ -14,12 +14,6 @@ from date time import date time
 import csv
 import unnittest
 ```
-
-## Tests
-The test_borderAnalysis.py in src directory is the unit test for borderAnalysis.py.
-There are 3 test in insight_testsuite/tests: 1) which was the test that was provided, 
-2) which test months are sorted correctly and 3) test that a border with multiple recurring measures calculates the correct monthly average 
-
 ## Approach
 
 The information read from the csv is put into a nested dictionary with the first key being the date, the second key being the border, the third key being the measure with the value of a list with the zero index being the value(from csv) and 1st index being the average defaulted at zero. {date : {border: {measure : [value, avgerage] }}}
@@ -33,3 +27,8 @@ Then I sort the information from the updated dictionary by date, value, measure 
 
 
 If the file read is not a csv or not [correctly formatted](#File-Format), a report csv will not be created.
+
+## Tests
+The test_borderAnalysis.py in src directory is the unit test for borderAnalysis.py.
+There are 3 test in insight_testsuite/tests: 1) which was the test that was provided, 
+2) which test months are sorted correctly and 3) test that a border with multiple recurring measures calculates the correct monthly average 

@@ -35,6 +35,7 @@ def readFile (inputFile):
         border,date, measure, value = row[3:7]
         border = border.strip()
         measure = measure.strip()
+        date = date.split()[0] + " 12:00:00 AM"
 
         # Creating the dictionary
         if date not in fileDict:

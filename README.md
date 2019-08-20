@@ -32,4 +32,4 @@ Once that tuple is create I calculate the monthly average for each measure at ea
 Then I sort the information from the updated dictionary by date, value, measure border to write to the report.
 
 
-If the file read is not a csv or not [correctly formatted](#File Format), a report csv will not be created.
+If the file read is not a csv or not [correctly formatted](#File-Format), a report csv will not be created.

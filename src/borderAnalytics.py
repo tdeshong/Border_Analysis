@@ -40,6 +40,7 @@ def readFile (inputFile):
         # Creating the dictionary
         if date not in fileDict:
           fileDict[date] = {border:{measure:[int(value), 0]}}
+          ascDates.append(date)
         elif border not in fileDict[date]:
           fileDict[date][border] = {measure:[int(value), 0]}
         elif measure not in fileDict[date][border]:
@@ -47,8 +48,7 @@ def readFile (inputFile):
         else:
           fileDict[date][border][measure][0] += int(value)
 
-      # get and sort dates from dictionary
-      ascDates = list(fileDict.keys())
+      # sort dates from dictionary
       ascDates.sort(key = lambda date: 
                     datetime.strptime(date, "%m/%d/%Y %I:%M:%S %p"))
   except IOError:

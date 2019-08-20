@@ -13,6 +13,10 @@ If the input or output directories do not exist or the csv file from the Bureau 
 from date time import date time
 import csv
 import unnittest
+```
 
-
+##Tests
+The test_borderAnalysis.py in src directory is the unit test for borderAnalysis.py.
+There are 3 test in insight_testsuite/tests: 1) which was the test that was provided, 
+2) which test months are sorted correctly and 3) test that a border with multiple recurring measures calculates the correct monthly average 
 
